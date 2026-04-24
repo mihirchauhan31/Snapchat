@@ -36,13 +36,18 @@
   .quick-add-btn { padding: 9px 18px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: sans-serif; white-space: nowrap; flex-shrink: 0; -webkit-tap-highlight-color: transparent; }
   .quick-add-btn:active { background: #155bb5; }
 
-  /* CARDS — original v1 style */
+  /* FILTER BAR */
+  .filter-bar { max-width: 640px; margin: 0 auto 8px; padding: 0 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .filter-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; white-space: nowrap; }
+  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 0.5px solid var(--border); background: var(--card); font-size: 12px; font-weight: 600; cursor: pointer; font-family: sans-serif; color: var(--muted); -webkit-tap-highlight-color: transparent; }
+  .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+  /* CARDS */
   .cards-wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
   .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 15px; line-height: 1.7; }
   .empty-state .big { font-size: 40px; margin-bottom: 12px; }
   .card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; position: relative; }
   .card-top { display: flex; align-items: stretch; }
-  /* Grey date bar — original style */
   .date-bar { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1rem 1.25rem; min-width: 64px; background: #f5f5f5; border-right: 0.5px solid var(--border); flex-shrink: 0; }
   .date-day { font-size: 22px; font-weight: 500; color: var(--text); line-height: 1; }
   .date-month { font-size: 11px; color: var(--muted); margin-top: 3px; letter-spacing: 0.05em; text-transform: uppercase; }
@@ -52,7 +57,7 @@
   .label { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; min-width: 72px; padding-top: 1px; flex-shrink: 0; }
   .caption-wrap { flex: 1; min-width: 0; }
   .caption-text { background: #f5f5f5; border-radius: 8px 8px 0 0; padding: 8px 12px; font-size: 13px; color: var(--text); border: 0.5px solid var(--border); border-bottom: none; line-height: 1.5; word-break: break-word; }
-  .copy-btn { display: block; width: 100%; padding: 9px; background: var(--primary); color: #fff; border: none; border-radius: 0 0 8px 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: sans-serif; text-align: center; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none; letter-spacing: 0.02em; }
+  .copy-btn { display: block; width: 100%; padding: 9px; background: var(--primary); color: #fff; border: none; border-radius: 0 0 8px 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: sans-serif; text-align: center; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none; }
   .copy-btn:active { background: #155bb5; }
   .copy-btn.success { background: var(--success); }
   .snap-link { font-size: 13px; color: var(--primary); text-decoration: none; }
@@ -87,7 +92,7 @@
   .field input:focus, .field textarea:focus { border-color: var(--primary); background: #fff; }
   .field textarea { height: 72px; resize: none; line-height: 1.5; }
   .sheet-actions { display: flex; gap: 10px; margin-top: 8px; }
-  .btn-save { flex: 1; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
+  .btn-save { flex: 1; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
   .btn-save:active { background: #155bb5; }
   .btn-cancel { padding: 13px 20px; background: #f0f0f0; color: var(--text); border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; font-family: sans-serif; }
 
@@ -104,10 +109,12 @@
   /* SETTINGS */
   .settings-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; align-items: flex-end; justify-content: center; }
   .settings-bg.open { display: flex; }
-  .settings-sheet { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 0 20px 36px; }
-  .settings-info { background: #f0f7ff; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #1a6fcc; line-height: 1.7; }
+  .settings-sheet { background: #fff; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; padding: 0 20px 36px; }
+  .settings-info { background: #f0f7ff; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #1a6fcc; line-height: 1.8; }
   .redirect-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 4px; }
   .redirect-box { background: #f5f5f5; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-family: monospace; color: #333; margin-bottom: 14px; word-break: break-all; border: 0.5px solid var(--border); }
+  .from-row-label { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 5px; }
+  .from-row-note { font-size: 11px; color: #aaa; margin-bottom: 12px; }
   .test-btn { width: 100%; padding: 12px; background: #f0f0f0; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: sans-serif; margin-bottom: 8px; }
   .test-result { font-size: 12px; color: var(--muted); text-align: center; min-height: 18px; margin-bottom: 12px; }
   .btn-save-settings { width: 100%; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: sans-serif; }
@@ -160,10 +167,17 @@
   </div>
 </div>
 
+<!-- FILTER -->
+<div class="filter-bar">
+  <span class="filter-label">Show:</span>
+  <button class="filter-btn active" id="fb-manual" onclick="setFilter('manual')">My Posts Only</button>
+  <button class="filter-btn" id="fb-all" onclick="setFilter('all')">All from Sheet</button>
+</div>
+
 <div class="cards-wrap" id="cardsWrap">
   <div class="empty-state">
     <div class="big">🎵</div>
-    <div>Tap ⚙️ to connect your Google Sheet,<br>then 🔄 to load your schedule.</div>
+    <div>Tap ⚙️ to connect your Google Sheet,<br>then 🔄 to load your schedule.<br><br>Or tap ＋ to add your first post manually.</div>
   </div>
 </div>
 
@@ -196,15 +210,23 @@
     <div class="sheet-handle"></div>
     <div class="sheet-title" style="text-align:left;margin-bottom:12px;">⚙️ Google Sheets Setup</div>
     <div class="settings-info">
-      📋 Your sheet: <b>A=Sr.No · B=Date · C=Song Name · D=(empty) · E=Snap URL</b><br>
-      Reads B, C, E only. Writes only to those columns.
+      📋 Your sheet columns:<br>
+      <b>A = Sr. No &nbsp;·&nbsp; B = Date &nbsp;·&nbsp; C = (empty) &nbsp;·&nbsp; D = Song Name &nbsp;·&nbsp; E = Snap URL</b><br>
+      Dashboard reads B, D, E only. Writes only to those columns.
     </div>
-    <div class="redirect-label">Add this exact URI in Google Cloud → OAuth → Authorised redirect URIs</div>
+
+    <div class="redirect-label">⚠️ Copy this exact URL → Google Cloud → OAuth → Authorised Redirect URIs</div>
     <div class="redirect-box" id="redirectUriDisplay">—</div>
+
     <div class="field"><label>Sheet ID</label><input type="text" id="s-id" placeholder="1JnsQYCRTfE-wyV7Yh5KuRtZhg8uqlnOVhiSasb2StYQ"></div>
     <div class="field"><label>Tab Name</label><input type="text" id="s-tab" placeholder="e.g. Post links"></div>
     <div class="field"><label>API Key (read)</label><input type="text" id="s-apikey" placeholder="AIza…"></div>
     <div class="field"><label>OAuth Client ID (write)</label><input type="text" id="s-clientid" placeholder="xxxxx.apps.googleusercontent.com"></div>
+
+    <div class="from-row-label">Load sheet from row number</div>
+    <div class="from-row-note">Enter the row number to start loading from (e.g. 322 to skip old posts). Row 2 = load everything.</div>
+    <div class="field"><input type="number" id="s-fromrow" placeholder="e.g. 322" min="2" style="width:160px;"></div>
+
     <button class="test-btn" onclick="testConnection()">🔌 Test Connection</button>
     <div class="test-result" id="testResult"></div>
     <button class="btn-save-settings" onclick="saveSettings()">Save & Connect</button>
@@ -215,7 +237,7 @@
 <div class="confirm-bg" id="confirmBg">
   <div class="confirm-box">
     <h3>Hide from dashboard?</h3>
-    <p>Card removed from view only. Google Sheet not affected. Refresh to restore.</p>
+    <p>Card removed from view only. Google Sheet is not affected. Refresh to restore.</p>
     <div class="confirm-actions">
       <button class="btn-confirm-cancel" onclick="closeConfirm()">Keep it</button>
       <button class="btn-confirm-del" onclick="confirmDelete()">Hide it</button>
@@ -239,52 +261,76 @@
 const CONFIG_KEY  = 'snap_dash_config';
 const LOCAL_KEY   = 'snap_local_extras';
 const DELETED_KEY = 'snap_deleted_ids';
+const MANUAL_KEY  = 'snap_manual_ids';   // posts added manually via dashboard
 
-let config = {}, posts = [], localExtras = {}, deletedIds = new Set();
+let config = {}, posts = [], localExtras = {}, deletedIds = new Set(), manualIds = new Set();
 let editingId = null, deleteTarget = null, oauthToken = null;
+let filterMode = 'manual'; // 'manual' = only dashboard-added, 'all' = everything from sheet
 
 window.addEventListener('DOMContentLoaded', () => {
   config      = JSON.parse(localStorage.getItem(CONFIG_KEY)  || '{}');
   localExtras = JSON.parse(localStorage.getItem(LOCAL_KEY)   || '{}');
   deletedIds  = new Set(JSON.parse(localStorage.getItem(DELETED_KEY) || '[]'));
+  manualIds   = new Set(JSON.parse(localStorage.getItem(MANUAL_KEY)  || '[]'));
   document.getElementById('redirectUriDisplay').textContent = location.origin + location.pathname;
   if (config.sheetId && config.apiKey) loadFromSheet();
   else openSettings();
 });
 
+// ── FILTER ──
+function setFilter(mode) {
+  filterMode = mode;
+  document.getElementById('fb-manual').classList.toggle('active', mode === 'manual');
+  document.getElementById('fb-all').classList.toggle('active', mode === 'all');
+  renderCards();
+}
+
 // ── SHEET READ ──
-// Your sheet: A=Sr.No(idx0) B=Date(idx1) C=Song(idx2) D=empty(idx3) E=URL(idx4)
+// Columns: A=Sr.No(0)  B=Date(1)  C=empty(2)  D=Song(3)  E=URL(4)
 async function loadFromSheet() {
   if (!config.sheetId || !config.apiKey) { openSettings(); return; }
   setSyncStatus('🔄 Loading…');
-  const range  = encodeURIComponent(`${config.tabName || 'Sheet1'}!A2:E2000`);
-  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?key=${config.apiKey}`;
+  const fromRow = parseInt(config.fromRow) || 2;
+  const range   = encodeURIComponent(`${config.tabName || 'Sheet1'}!A${fromRow}:E2000`);
+  const apiUrl  = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?key=${config.apiKey}`;
   try {
     const res  = await fetch(apiUrl);
     const data = await res.json();
     if (data.error) { setSyncStatus('❌ ' + data.error.message); showToast('Error: ' + data.error.message); return; }
     const rows = data.values || [];
-    posts = rows.map((row, i) => ({
-      id:       'row_' + (i + 2),
-      rowIndex:  i + 2,
-      date:     (row[1] || '').trim(),   // B = index 1
-      song:     (row[2] || '').trim(),   // C = index 2
-      url:      (row[4] || '').trim(),   // E = index 4
-    })).filter(p => p.song && p.song !== '-');
+    // Keep any manually added posts that aren't in the sheet
+    const sheetPosts = rows.map((row, i) => ({
+      id:       'row_' + (i + fromRow),
+      rowIndex:  i + fromRow,
+      date:     (row[1] || '').trim(),   // col B = index 1
+      song:     (row[3] || '').trim(),   // col D = index 3  ← FIXED
+      url:      (row[4] || '').trim(),   // col E = index 4
+      fromSheet: true,
+    })).filter(p => p.song && p.song !== '-' && p.song !== '');
+
+    // Preserve manually-added local posts
+    const localOnlyPosts = posts.filter(p => !p.fromSheet);
+    posts = [...sheetPosts, ...localOnlyPosts];
+
     renderCards();
     setSyncStatus('✅ Synced');
     setTimeout(() => setSyncStatus(''), 3000);
   } catch (e) { setSyncStatus('❌ Load failed'); showToast('Could not load — check settings'); }
 }
 
-// ── SHEET WRITE — only B(Date) C(Song) E(URL), never touches A or D ──
+// ── SHEET WRITE — B(Date) D(Song) E(URL) only ──
+// We write columns B:E as [date, '', song, url]  (C stays empty)
 async function appendToSheet(date, song, url) {
   if (!await ensureAuth()) return false;
   setSyncStatus('🔄 Syncing…');
   const range  = encodeURIComponent(`${config.tabName || 'Sheet1'}!B:E`);
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
   try {
-    const res  = await fetch(apiUrl, { method: 'POST', headers: { 'Authorization': 'Bearer ' + oauthToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [[date, song, '', url]] }) });
+    const res  = await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + oauthToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [[date, '', song, url]] })  // B=date C='' D=song E=url
+    });
     const data = await res.json();
     if (data.error) { setSyncStatus('❌ Sync failed'); showToast(data.error.message); return false; }
     setSyncStatus('✅ Synced'); setTimeout(() => setSyncStatus(''), 3000); return true;
@@ -297,46 +343,63 @@ async function updateSheetRow(rowIndex, date, song, url) {
   const range  = encodeURIComponent(`${config.tabName || 'Sheet1'}!B${rowIndex}:E${rowIndex}`);
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/${range}?valueInputOption=USER_ENTERED`;
   try {
-    const res  = await fetch(apiUrl, { method: 'PUT', headers: { 'Authorization': 'Bearer ' + oauthToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ values: [[date, song, '', url]] }) });
+    const res  = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Authorization': 'Bearer ' + oauthToken, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: [[date, '', song, url]] })  // B=date C='' D=song E=url
+    });
     const data = await res.json();
     if (data.error) { setSyncStatus('❌ Sync failed'); showToast(data.error.message); return false; }
     setSyncStatus('✅ Synced'); setTimeout(() => setSyncStatus(''), 3000); return true;
   } catch (e) { setSyncStatus('❌ Sync failed'); return false; }
 }
 
-// ── OAUTH — FIX: use exact page URL as redirect_uri to avoid mismatch error ──
+// ── OAUTH ──
+// FIX: Use implicit flow with postMessage so the popup redirects back to itself
+// This avoids the "has not completed verification" error for test users
 async function ensureAuth() {
   if (oauthToken) return true;
   if (!config.clientId) { showToast('Add OAuth Client ID in ⚙️'); openSettings(); return false; }
   const redirectUri = location.origin + location.pathname;
   const authUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
-    + '?client_id=' + config.clientId
-    + '&redirect_uri=' + encodeURIComponent(redirectUri)
+    + '?client_id='     + encodeURIComponent(config.clientId)
+    + '&redirect_uri='  + encodeURIComponent(redirectUri)
     + '&response_type=token'
-    + '&scope=' + encodeURIComponent('https://www.googleapis.com/auth/spreadsheets');
+    + '&scope='         + encodeURIComponent('https://www.googleapis.com/auth/spreadsheets')
+    + '&prompt=select_account';
+
   return new Promise(resolve => {
-    const w  = window.open(authUrl, '_blank', 'width=520,height=620');
+    const w  = window.open(authUrl, '_blank', 'width=520,height=640');
     const iv = setInterval(() => {
       try {
-        if (w.location.href.startsWith(redirectUri)) {
-          const hash = w.location.hash;
-          if (hash && hash.includes('access_token')) {
-            oauthToken = new URLSearchParams(hash.slice(1)).get('access_token');
-            clearInterval(iv); w.close(); resolve(true);
-          }
+        const href = w.location.href;
+        if (href && href.startsWith(redirectUri)) {
+          const hash = w.location.hash || w.location.search;
+          const params = new URLSearchParams(hash.replace('#','').replace('?',''));
+          const token  = params.get('access_token');
+          if (token) { oauthToken = token; clearInterval(iv); w.close(); resolve(true); return; }
         }
-      } catch(e) {}
-      if (w.closed) { clearInterval(iv); resolve(false); }
-    }, 300);
+      } catch(e) { /* cross-origin — still on Google */ }
+      if (w && w.closed) { clearInterval(iv); resolve(false); }
+    }, 400);
   });
 }
 
-// ── RENDER (original v1 card style) ──
+// ── RENDER ──
 function renderCards() {
-  const wrap    = document.getElementById('cardsWrap');
-  const visible = posts.filter(p => !deletedIds.has(p.id));
+  const wrap = document.getElementById('cardsWrap');
+  let visible = posts.filter(p => !deletedIds.has(p.id));
+
+  if (filterMode === 'manual') {
+    // Show only posts added via this dashboard (manualIds)
+    visible = visible.filter(p => manualIds.has(p.id));
+  }
+
   if (!visible.length) {
-    wrap.innerHTML = '<div class="empty-state"><div class="big">🎵</div><div>No posts loaded yet.<br>Tap 🔄 to refresh.</div></div>';
+    const msg = filterMode === 'manual'
+      ? 'No posts added yet.<br>Tap ＋ to add your first post,<br>or switch to "All from Sheet" to see sheet data.'
+      : 'No posts loaded.<br>Tap 🔄 to refresh from sheet.';
+    wrap.innerHTML = `<div class="empty-state"><div class="big">🎵</div><div>${msg}</div></div>`;
     return;
   }
   wrap.innerHTML = visible.map(p => cardHTML(p)).join('');
@@ -353,7 +416,6 @@ function cardHTML(p) {
     if (!isNaN(d.getTime())) {
       day = d.getDate(); month = d.toLocaleString('en', { month: 'short' });
     } else {
-      // Handle "9th April 2026", "April 9, 2026" etc.
       const cleaned = date.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
       const d2 = new Date(cleaned);
       if (!isNaN(d2.getTime())) {
@@ -402,8 +464,6 @@ function formatTime(t) {
   const [h, m] = t.split(':').map(Number);
   return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${h >= 12 ? 'PM' : 'AM'}`;
 }
-
-// Convert any date string → YYYY-MM-DD for <input type="date">
 function toInputDate(str) {
   if (!str) return '';
   const d = new Date(str);
@@ -423,7 +483,10 @@ async function quickAdd() {
   if (!date) { showToast('Date is required'); return; }
   const ok = await appendToSheet(date, song, url);
   if (ok) {
-    posts.push({ id: 'local_' + Date.now(), rowIndex: posts.length + 2, date, song, url });
+    const id = 'manual_' + Date.now();
+    posts.push({ id, rowIndex: 9999, date, song, url, fromSheet: false });
+    manualIds.add(id);
+    localStorage.setItem(MANUAL_KEY, JSON.stringify([...manualIds]));
     renderCards();
     ['qa-date','qa-song','qa-url'].forEach(i => document.getElementById(i).value = '');
     showToast('Added to sheet ✅');
@@ -438,8 +501,8 @@ function openSheet(editId = null) {
     const p = posts.find(x => x.id === editId);
     const e = localExtras[editId] || {};
     if (p) {
-      document.getElementById('f-date').value    = toInputDate(p.date);  // FIX: convert to YYYY-MM-DD
-      document.getElementById('f-song').value    = p.song || '';          // FIX: song goes to song field
+      document.getElementById('f-date').value    = toInputDate(p.date);
+      document.getElementById('f-song').value    = p.song || '';
       document.getElementById('f-url').value     = (p.url && p.url !== '-') ? p.url : '';
       document.getElementById('f-caption').value = e.caption || '';
       document.getElementById('f-overlay').value = e.overlay || '';
@@ -454,25 +517,32 @@ function closeSheet() { document.getElementById('sheetBg').classList.remove('ope
 function sheetBgClick(e) { if (e.target === document.getElementById('sheetBg')) closeSheet(); }
 
 async function savePost() {
-  const date = document.getElementById('f-date').value;
-  const song = document.getElementById('f-song').value.trim();
-  const url  = document.getElementById('f-url').value.trim();
+  const date    = document.getElementById('f-date').value;
+  const song    = document.getElementById('f-song').value.trim();
+  const url     = document.getElementById('f-url').value.trim();
   const caption = document.getElementById('f-caption').value.trim();
   const overlay = document.getElementById('f-overlay').value.trim();
   const time    = document.getElementById('f-time').value;
   if (!song) { showToast('Song name is required'); return; }
   if (!date) { showToast('Date is required'); return; }
+
   if (editingId) {
     const p = posts.find(x => x.id === editingId);
     if (p) {
       const ok = await updateSheetRow(p.rowIndex, date, song, url);
-      if (ok) { Object.assign(p, { date, song, url }); saveLocalExtras(editingId, caption, overlay, time); renderCards(); showToast('Updated ✅'); }
+      if (ok) {
+        Object.assign(p, { date, song, url });
+        saveLocalExtras(editingId, caption, overlay, time);
+        renderCards(); showToast('Updated ✅');
+      }
     }
   } else {
     const ok = await appendToSheet(date, song, url);
     if (ok) {
-      const id = 'local_' + Date.now();
-      posts.push({ id, rowIndex: posts.length + 2, date, song, url });
+      const id = 'manual_' + Date.now();
+      posts.push({ id, rowIndex: 9999, date, song, url, fromSheet: false });
+      manualIds.add(id);
+      localStorage.setItem(MANUAL_KEY, JSON.stringify([...manualIds]));
       saveLocalExtras(id, caption, overlay, time);
       renderCards(); showToast('Saved ✅');
     }
@@ -488,7 +558,7 @@ function saveLocalExtras(id, caption, overlay, time) {
   localStorage.setItem(LOCAL_KEY, JSON.stringify(localExtras));
 }
 
-// ── DELETE ──
+// ── DELETE / HIDE ──
 function askDelete(id) { deleteTarget = id; document.getElementById('confirmBg').classList.add('open'); }
 function closeConfirm() { document.getElementById('confirmBg').classList.remove('open'); deleteTarget = null; }
 function confirmDelete() {
@@ -504,6 +574,7 @@ function openSettings() {
   document.getElementById('s-tab').value      = config.tabName  || '';
   document.getElementById('s-apikey').value   = config.apiKey   || '';
   document.getElementById('s-clientid').value = config.clientId || '';
+  document.getElementById('s-fromrow').value  = config.fromRow  || '';
   document.getElementById('testResult').textContent = '';
   document.getElementById('redirectUriDisplay').textContent = location.origin + location.pathname;
   document.getElementById('settingsBg').classList.add('open');
@@ -524,7 +595,8 @@ async function testConnection() {
     const data = await res.json();
     if (data.error) { el.textContent = '❌ ' + data.error.message; return; }
     const rows = data.values || [];
-    const sample = rows[0] ? `Found song: "${rows[0][2] || '?'}"` : 'Connected (empty)';
+    // col D = index 3 = song name
+    const sample = rows[0] ? `Found: "${rows[0][3] || rows[0][1] || 'data'}"` : 'Connected ✅';
     el.textContent = '✅ ' + sample;
   } catch(e) { el.textContent = '❌ Network error'; }
 }
@@ -535,6 +607,7 @@ function saveSettings() {
     tabName:  document.getElementById('s-tab').value.trim() || 'Sheet1',
     apiKey:   document.getElementById('s-apikey').value.trim(),
     clientId: document.getElementById('s-clientid').value.trim(),
+    fromRow:  document.getElementById('s-fromrow').value.trim() || '2',
   };
   localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
   document.getElementById('settingsBg').classList.remove('open');
