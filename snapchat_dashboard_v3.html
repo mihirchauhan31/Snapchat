@@ -107,13 +107,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .f-row2 { display: flex; gap: 10px; margin-bottom: 12px; }
 .f-row2 .f { flex: 1; margin-bottom: 0; }
 
-/* time picker custom */
-.time-picker-wrap { display: flex; gap: 8px; align-items: center; }
-.time-select { flex: 1; padding: 11px 10px; border: 0.5px solid var(--border); border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; text-align: center; cursor: pointer; }
-.time-select:focus { border-color: var(--primary); }
-.time-sep { font-size: 20px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
-.ampm-select { width: 80px; padding: 11px 8px; border: 0.5px solid var(--border); border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; text-align: center; cursor: pointer; font-weight: 600; }
-.ampm-select:focus { border-color: var(--primary); }
+/* time full select */
+.time-full-sel { width: 100%; padding: 11px 14px; border: 0.5px solid var(--border); border-radius: 10px; font-size: 15px; font-family: inherit; color: var(--text); background: var(--bg); outline: none; cursor: pointer; }
+.time-full-sel:focus { border-color: var(--primary); }
 
 .sheet-acts { display: flex; gap: 10px; margin-top: 10px; }
 .btn-save { flex: 1; padding: 13px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
@@ -168,6 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
     <div class="top-right">
       <span class="sync-pill" id="syncPill"></span>
+      <button class="icon-btn" onclick="loadPostsFromSheet()" title="Refresh">🔄</button>
       <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
     </div>
   </div>
@@ -225,24 +222,33 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="f"><label>Text Overlay <span style="font-size:10px;font-weight:400;color:#aaa;">optional · tap card to copy</span></label><input type="text" id="f-overlay" placeholder="Leave blank if none"></div>
     <div class="f">
       <label>Posting Time</label>
-      <div class="time-picker-wrap">
-        <select class="time-select" id="f-hour">
-          <option value="">HH</option>
-          <option>1</option><option>2</option><option>3</option><option>4</option>
-          <option>5</option><option>6</option><option>7</option><option>8</option>
-          <option>9</option><option>10</option><option>11</option><option>12</option>
-        </select>
-        <span class="time-sep">:</span>
-        <select class="time-select" id="f-min">
-          <option value="">MM</option>
-          <option>00</option><option>15</option><option>30</option><option>45</option>
-        </select>
-        <select class="ampm-select" id="f-ampm">
-          <option value="">—</option>
-          <option>AM</option>
-          <option>PM</option>
-        </select>
-      </div>
+      <select id="f-time-sel" class="time-full-sel">
+        <option value="">— Select time —</option>
+        <option>12:00 AM</option><option>12:15 AM</option><option>12:30 AM</option><option>12:45 AM</option>
+        <option>1:00 AM</option><option>1:15 AM</option><option>1:30 AM</option><option>1:45 AM</option>
+        <option>2:00 AM</option><option>2:15 AM</option><option>2:30 AM</option><option>2:45 AM</option>
+        <option>3:00 AM</option><option>3:15 AM</option><option>3:30 AM</option><option>3:45 AM</option>
+        <option>4:00 AM</option><option>4:15 AM</option><option>4:30 AM</option><option>4:45 AM</option>
+        <option>5:00 AM</option><option>5:15 AM</option><option>5:30 AM</option><option>5:45 AM</option>
+        <option>6:00 AM</option><option>6:15 AM</option><option>6:30 AM</option><option>6:45 AM</option>
+        <option>7:00 AM</option><option>7:15 AM</option><option>7:30 AM</option><option>7:45 AM</option>
+        <option>8:00 AM</option><option>8:15 AM</option><option>8:30 AM</option><option>8:45 AM</option>
+        <option>9:00 AM</option><option>9:15 AM</option><option>9:30 AM</option><option>9:45 AM</option>
+        <option>10:00 AM</option><option>10:15 AM</option><option>10:30 AM</option><option>10:45 AM</option>
+        <option>11:00 AM</option><option>11:15 AM</option><option>11:30 AM</option><option>11:45 AM</option>
+        <option>12:00 PM</option><option>12:15 PM</option><option>12:30 PM</option><option>12:45 PM</option>
+        <option>1:00 PM</option><option>1:15 PM</option><option>1:30 PM</option><option>1:45 PM</option>
+        <option>2:00 PM</option><option>2:15 PM</option><option>2:30 PM</option><option>2:45 PM</option>
+        <option>3:00 PM</option><option>3:15 PM</option><option>3:30 PM</option><option>3:45 PM</option>
+        <option>4:00 PM</option><option>4:15 PM</option><option>4:30 PM</option><option>4:45 PM</option>
+        <option>5:00 PM</option><option>5:15 PM</option><option>5:30 PM</option><option>5:45 PM</option>
+        <option>6:00 PM</option><option>6:15 PM</option><option>6:30 PM</option><option>6:45 PM</option>
+        <option>7:00 PM</option><option>7:15 PM</option><option>7:30 PM</option><option>7:45 PM</option>
+        <option>8:00 PM</option><option>8:15 PM</option><option>8:30 PM</option><option>8:45 PM</option>
+        <option>9:00 PM</option><option>9:15 PM</option><option>9:30 PM</option><option>9:45 PM</option>
+        <option>10:00 PM</option><option>10:15 PM</option><option>10:30 PM</option><option>10:45 PM</option>
+        <option>11:00 PM</option><option>11:15 PM</option><option>11:30 PM</option><option>11:45 PM</option>
+      </select>
     </div>
 
     <div class="sheet-acts">
@@ -256,11 +262,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 <div class="sheet-bg" id="settingsBg" onclick="bgClick('settingsBg',event)">
   <div class="sheet">
     <div class="handle"></div>
-    <div class="sheet-title">⚙️ Google Sheets Setup</div>
+    <div class="sheet-title">⚙️ Settings</div>
+
+    <div class="sdiv">📦 JSONBin — Cross-device Sync <span class="chip green">Required</span></div>
+    <div class="set-info" style="background:#fff8e1;color:#b8600b;">
+      JSONBin stores your posts online so desktop &amp; mobile stay in sync.<br>
+      1. Go to <b>jsonbin.io</b> → Sign up free<br>
+      2. Click <b>Create Bin</b> → paste <code style="background:#fff;padding:1px 5px;border-radius:4px;">{}</code> → Save<br>
+      3. Copy the <b>Bin ID</b> from the URL<br>
+      4. Go to <b>API Keys</b> → copy your <b>Master Key</b>
+    </div>
+    <div class="f"><label>JSONBin Bin ID</label><input type="text" id="s-binid" placeholder="64abc123e3a7c863a9…"></div>
+    <div class="f"><label>JSONBin Master Key</label><input type="text" id="s-binkey" placeholder="$2a$10$…"></div>
+    <button class="test-btn" onclick="testBin()">🔌 Test JSONBin</button>
+    <div class="test-res" id="testBinRes"></div>
+
+    <div class="sdiv">📊 Google Sheet — Post Records <span class="chip green">↑ Sheet</span></div>
     <div class="set-info">
-      📋 Your sheet columns:<br>
-      <b>A = Sr. No &nbsp;·&nbsp; B = Date &nbsp;·&nbsp; C = Song Name &nbsp;·&nbsp; D = Snap URL</b><br>
-      Dashboard writes A, B, C, D to the exact row you specify.
+      📋 Sheet columns: <b>A=Sr.No · B=Date · C=Song · D=Snap URL</b><br>
+      Dashboard writes to your sheet when you add/edit posts.
     </div>
     <div class="redir-lbl">⚠️ Add this in Google Cloud → OAuth → Authorised Redirect URIs</div>
     <div class="redir-box" id="redirBox">—</div>
@@ -268,8 +288,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="f"><label>Tab Name</label><input type="text" id="s-tab" placeholder="Post links"></div>
     <div class="f"><label>API Key (read)</label><input type="text" id="s-key" placeholder="AIza…"></div>
     <div class="f"><label>OAuth Client ID (write)</label><input type="text" id="s-cid" placeholder="xxxxx.apps.googleusercontent.com"></div>
-    <button class="test-btn" onclick="testConn()">🔌 Test Connection</button>
+    <button class="test-btn" onclick="testConn()">🔌 Test Sheet</button>
     <div class="test-res" id="testRes"></div>
+
     <button class="btn-connect" onclick="saveSettings()">Save & Connect</button>
   </div>
 </div>
@@ -302,8 +323,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
-const POSTS_KEY  = 'snp_posts_v3';
-const CONFIG_KEY = 'snp_config_v3';
+const POSTS_KEY  = 'snp_posts_v4';
+const CONFIG_KEY = 'snp_config_v4';
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b';
 
 let posts    = [];
 let cfg      = {};
@@ -318,8 +340,9 @@ window.addEventListener('DOMContentLoaded', () => {
   posts = JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
   cfg   = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}');
   document.getElementById('redirBox').textContent = location.origin + location.pathname;
-  render();
-  if (!cfg.sheetId) openSettings();
+  render(); // show local cache immediately
+  if (!cfg.sheetId && !cfg.binId) { openSettings(); return; }
+  loadPostsFromBin(); // sync from JSONBin on every open
 });
 
 // ═══════════════════════════════════════════
@@ -433,9 +456,7 @@ function openAddSheet() {
   document.getElementById('f-url').value    = '';
   document.getElementById('f-caption').value= '';
   document.getElementById('f-overlay').value= '';
-  document.getElementById('f-hour').value   = '';
-  document.getElementById('f-min').value    = '';
-  document.getElementById('f-ampm').value   = '';
+  document.getElementById('f-time-sel').value= '';
   document.getElementById('mainSheetBg').classList.add('open');
 }
 
@@ -451,11 +472,7 @@ function openEditSheet(id) {
   document.getElementById('f-url').value     = p.url     || '';
   document.getElementById('f-caption').value = p.caption || '';
   document.getElementById('f-overlay').value = p.overlay || '';
-  // Parse stored time e.g. "3:00 PM"
-  const tp = parseStoredTime(p.time || '');
-  document.getElementById('f-hour').value  = tp.h;
-  document.getElementById('f-min').value   = tp.m;
-  document.getElementById('f-ampm').value  = tp.ap;
+  document.getElementById('f-time-sel').value = p.time || '';
   document.getElementById('mainSheetBg').classList.add('open');
 }
 
@@ -467,10 +484,7 @@ async function savePost() {
   const url     = document.getElementById('f-url').value.trim();
   const caption = document.getElementById('f-caption').value.trim();
   const overlay = document.getElementById('f-overlay').value.trim();
-  const h  = document.getElementById('f-hour').value;
-  const m  = document.getElementById('f-min').value;
-  const ap = document.getElementById('f-ampm').value;
-  const time = (h && m && ap) ? `${h}:${m} ${ap}` : '';
+  const time    = document.getElementById('f-time-sel').value || '';
 
   if (!song)    { toast('Song name is required'); return; }
   if (!dateRaw) { toast('Date is required'); return; }
@@ -608,14 +622,32 @@ async function ensureAuth() {
 // SETTINGS
 // ═══════════════════════════════════════════
 function openSettings() {
-  document.getElementById('s-id').value  = cfg.sheetId  || '';
-  document.getElementById('s-tab').value = cfg.tabName  || '';
-  document.getElementById('s-key').value = cfg.apiKey   || '';
-  document.getElementById('s-cid').value = cfg.clientId || '';
+  document.getElementById('s-binid').value = cfg.binId   || '';
+  document.getElementById('s-binkey').value= cfg.binKey  || '';
+  document.getElementById('s-id').value    = cfg.sheetId  || '';
+  document.getElementById('s-tab').value   = cfg.tabName  || '';
+  document.getElementById('s-key').value   = cfg.apiKey   || '';
+  document.getElementById('s-cid').value   = cfg.clientId || '';
   document.getElementById('redirBox').textContent = location.origin + location.pathname;
-  document.getElementById('testRes').textContent  = '';
+  document.getElementById('testBinRes').textContent = '';
+  document.getElementById('testRes').textContent    = '';
   document.getElementById('settingsBg').classList.add('open');
 }
+
+async function testBin() {
+  const binId  = document.getElementById('s-binid').value.trim();
+  const binKey = document.getElementById('s-binkey').value.trim();
+  const el     = document.getElementById('testBinRes');
+  if (!binId || !binKey) { el.textContent = '❌ Bin ID and Master Key required'; return; }
+  el.textContent = '🔄 Testing…';
+  try {
+    const res  = await fetch(`${JSONBIN_BASE}/${binId}/latest`, { headers: { 'X-Master-Key': binKey } });
+    const data = await res.json();
+    if (data.message && !data.record) { el.textContent = '❌ ' + data.message; return; }
+    el.textContent = '✅ JSONBin connected!';
+  } catch(e) { el.textContent = '❌ Network error'; }
+}
+
 async function testConn() {
   const id  = document.getElementById('s-id').value.trim();
   const tab = document.getElementById('s-tab').value.trim() || 'Sheet1';
@@ -629,11 +661,14 @@ async function testConn() {
     const data   = await res.json();
     if (data.error) { el.textContent = '❌ ' + data.error.message; return; }
     const rows = data.values || [];
-    el.textContent = rows[0] ? `✅ Connected! Found: "${rows[0][2] || rows[0][1] || 'data'}"` : '✅ Connected (sheet empty in range)';
+    el.textContent = rows[0] ? `✅ Sheet connected! Found: "${rows[0][2] || rows[0][1] || 'data'}"` : '✅ Sheet connected';
   } catch(e) { el.textContent = '❌ Network error'; }
 }
+
 function saveSettings() {
   cfg = {
+    binId:    document.getElementById('s-binid').value.trim(),
+    binKey:   document.getElementById('s-binkey').value.trim(),
     sheetId:  document.getElementById('s-id').value.trim(),
     tabName:  document.getElementById('s-tab').value.trim() || 'Sheet1',
     apiKey:   document.getElementById('s-key').value.trim(),
@@ -642,6 +677,7 @@ function saveSettings() {
   localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
   closeSheet('settingsBg');
   toast('Settings saved ✅');
+  if (cfg.binId && cfg.binKey) loadPostsFromBin();
 }
 
 // ═══════════════════════════════════════════
@@ -669,7 +705,49 @@ function showCopyModal(text) {
 // ═══════════════════════════════════════════
 // HELPERS
 // ═══════════════════════════════════════════
-function savePosts() { localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); }
+// ═══════════════════════════════════════════
+// JSONBIN — CROSS-DEVICE SYNC
+// Stores all posts in a JSONBin bin as a JSON array
+// Same bin read/written from any device
+// ═══════════════════════════════════════════
+async function savePosts() {
+  localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); // local cache
+  if (cfg.binId && cfg.binKey) await savePostsToBin();
+}
+
+async function savePostsToBin() {
+  setSP('🔄 Saving…');
+  try {
+    const res = await fetch(`${JSONBIN_BASE}/${cfg.binId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': cfg.binKey,
+        'X-Bin-Versioning': 'false'   // always overwrite, no version history
+      },
+      body: JSON.stringify({ posts })
+    });
+    const data = await res.json();
+    if (data.message && !data.record) { setSP('❌ Save failed'); toast('JSONBin: ' + data.message); return; }
+    setSP('✅ Synced'); setTimeout(() => setSP(''), 2500);
+  } catch(e) { setSP('❌ Save failed'); toast('Network error — check connection'); }
+}
+
+async function loadPostsFromBin() {
+  if (!cfg.binId || !cfg.binKey) return;
+  setSP('🔄 Loading…');
+  try {
+    const res  = await fetch(`${JSONBIN_BASE}/${cfg.binId}/latest`, {
+      headers: { 'X-Master-Key': cfg.binKey }
+    });
+    const data = await res.json();
+    if (!data.record) { setSP(''); return; }
+    posts = data.record.posts || [];
+    localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+    render();
+    setSP('✅ Loaded'); setTimeout(() => setSP(''), 2000);
+  } catch(e) { setSP(''); }
+}
 
 // Parse "April 22, 2026", "2026-04-22", "22nd April 2026" → {day, mon}
 function parseDate(str) {
@@ -693,13 +771,6 @@ function toInputDate(str) {
   let d = new Date(str);
   if (isNaN(d)) { d = new Date(str.replace(/(\d+)(st|nd|rd|th)/gi,'$1')); }
   return isNaN(d) ? '' : d.toISOString().split('T')[0];
-}
-
-// Parse "3:00 PM" → {h:'3', m:'00', ap:'PM'}
-function parseStoredTime(t) {
-  if (!t) return {h:'',m:'',ap:''};
-  const m = t.match(/^(\d+):(\d+)\s*(AM|PM)$/i);
-  return m ? {h:m[1], m:m[2], ap:m[3].toUpperCase()} : {h:'',m:'',ap:''};
 }
 
 function esc(s) {
