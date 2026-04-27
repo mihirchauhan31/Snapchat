@@ -164,7 +164,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     </div>
     <div class="top-right">
       <span class="sync-pill" id="syncPill"></span>
-      <button class="icon-btn" onclick="loadPostsFromSheet()" title="Refresh">🔄</button>
+      <button class="icon-btn" id="refreshBtn" onclick="handleRefresh(this)" title="Refresh">🔄</button>
       <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
     </div>
   </div>
@@ -719,19 +719,30 @@ async function savePostsToDashTab() {
 }
 
 async function loadPostsFromDashTab() {
-  if (!cfg.sheetId || !cfg.apiKey) return;
-  setSP('🔄 Loading…');
+  if (!cfg.sheetId || !cfg.apiKey) {
+    toast('⚙️ Setup not complete — check Settings');
+    return;
+  }
+  setSP('🔄 Refreshing…');
+  // Add timestamp to bust any browser cache
   const range  = encodeURIComponent(`${DASH_TAB}!A2:I2000`);
-  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${cfg.sheetId}/values/${range}?key=${cfg.apiKey}`;
+  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${cfg.sheetId}/values/${range}?key=${cfg.apiKey}&_=${Date.now()}`;
   try {
-    const res  = await fetch(apiUrl);
+    const res  = await fetch(apiUrl, { cache: 'no-store' });
     const data = await res.json();
     if (data.error) {
-      // Tab doesn't exist yet or empty — that's fine, start fresh
-      setSP(''); return;
+      setSP('❌ Refresh failed');
+      toast('Dashboard tab error: ' + data.error.message + '. Have you created the "Dashboard" tab in your sheet?');
+      setTimeout(() => setSP(''), 3000);
+      return;
     }
     const rows = data.values || [];
-    if (!rows.length) { setSP(''); return; }
+    if (!rows.length) {
+      setSP('✅ Up to date');
+      toast('Dashboard tab is empty — add a post first');
+      setTimeout(() => setSP(''), 2000);
+      return;
+    }
     posts = rows
       .map(r => ({
         id:      r[0] || 'p_' + Math.random().toString(36).slice(2),
@@ -747,8 +758,14 @@ async function loadPostsFromDashTab() {
       .filter(p => p.song);
     localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
     render();
-    setSP('✅ Loaded'); setTimeout(() => setSP(''), 2000);
-  } catch(e) { setSP(''); }
+    setSP('✅ Refreshed');
+    toast(`Refreshed — ${posts.length} post${posts.length !== 1 ? 's' : ''} loaded`);
+    setTimeout(() => setSP(''), 2500);
+  } catch(e) {
+    setSP('❌ Network error');
+    toast('Network error — check your internet connection');
+    setTimeout(() => setSP(''), 3000);
+  }
 }
 
 // Parse "April 22, 2026", "2026-04-22", "22nd April 2026" → {day, mon}
@@ -784,6 +801,14 @@ function esc(s) {
 // For JS onclick strings — escape single quotes and backslashes only
 function escJS(s) {
   return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+}
+
+async function handleRefresh(btn) {
+  btn.style.opacity = '0.4';
+  btn.style.pointerEvents = 'none';
+  await loadPostsFromDashTab();
+  btn.style.opacity = '';
+  btn.style.pointerEvents = '';
 }
 
 function setSP(msg) { document.getElementById('syncPill').textContent = msg; }
