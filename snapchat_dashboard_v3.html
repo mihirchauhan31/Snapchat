@@ -264,33 +264,22 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="handle"></div>
     <div class="sheet-title">⚙️ Settings</div>
 
-    <div class="sdiv">📦 JSONBin — Cross-device Sync <span class="chip green">Required</span></div>
-    <div class="set-info" style="background:#fff8e1;color:#b8600b;">
-      JSONBin stores your posts online so desktop &amp; mobile stay in sync.<br>
-      1. Go to <b>jsonbin.io</b> → Sign up free<br>
-      2. Click <b>Create Bin</b> → paste <code style="background:#fff;padding:1px 5px;border-radius:4px;">{}</code> → Save<br>
-      3. Copy the <b>Bin ID</b> from the URL<br>
-      4. Go to <b>API Keys</b> → copy your <b>Master Key</b>
-    </div>
-    <div class="f"><label>JSONBin Bin ID</label><input type="text" id="s-binid" placeholder="64abc123e3a7c863a9…"></div>
-    <div class="f"><label>JSONBin Master Key</label><input type="text" id="s-binkey" placeholder="$2a$10$…"></div>
-    <button class="test-btn" onclick="testBin()">🔌 Test JSONBin</button>
-    <div class="test-res" id="testBinRes"></div>
-
-    <div class="sdiv">📊 Google Sheet — Post Records <span class="chip green">↑ Sheet</span></div>
     <div class="set-info">
-      📋 Sheet columns: <b>A=Sr.No · B=Date · C=Song · D=Snap URL</b><br>
-      Dashboard writes to your sheet when you add/edit posts.
+      📋 Your sheet columns: <b>A=Sr.No · B=Date · C=Song · D=Snap URL</b><br>
+      Cross-device sync uses a second tab called <b>"Dashboard"</b> in the same sheet.<br>
+      ⚠️ Make sure you've created a tab named <b>Dashboard</b> in your Google Sheet.
     </div>
+
     <div class="redir-lbl">⚠️ Add this in Google Cloud → OAuth → Authorised Redirect URIs</div>
     <div class="redir-box" id="redirBox">—</div>
+
     <div class="f"><label>Sheet ID</label><input type="text" id="s-id" placeholder="1JnsQYCRTfE-wyV7…"></div>
-    <div class="f"><label>Tab Name</label><input type="text" id="s-tab" placeholder="Post links"></div>
+    <div class="f"><label>Post Links Tab Name</label><input type="text" id="s-tab" placeholder="Post links"></div>
     <div class="f"><label>API Key (read)</label><input type="text" id="s-key" placeholder="AIza…"></div>
     <div class="f"><label>OAuth Client ID (write)</label><input type="text" id="s-cid" placeholder="xxxxx.apps.googleusercontent.com"></div>
-    <button class="test-btn" onclick="testConn()">🔌 Test Sheet</button>
-    <div class="test-res" id="testRes"></div>
 
+    <button class="test-btn" onclick="testConn()">🔌 Test Connection</button>
+    <div class="test-res" id="testRes"></div>
     <button class="btn-connect" onclick="saveSettings()">Save & Connect</button>
   </div>
 </div>
@@ -323,9 +312,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 // ═══════════════════════════════════════════
 // STATE
 // ═══════════════════════════════════════════
-const POSTS_KEY  = 'snp_posts_v4';
-const CONFIG_KEY = 'snp_config_v4';
-const JSONBIN_BASE = 'https://api.jsonbin.io/v3/b';
+const POSTS_KEY  = 'snp_posts_v5';
+const CONFIG_KEY = 'snp_config_v5';
+const DASH_TAB   = 'Dashboard'; // second tab in your Google Sheet
 
 let posts    = [];
 let cfg      = {};
@@ -334,15 +323,15 @@ let editId   = null;
 let delId    = null;
 
 // ═══════════════════════════════════════════
-// INIT
+// INIT — load local cache first, then fetch from sheet
 // ═══════════════════════════════════════════
 window.addEventListener('DOMContentLoaded', () => {
   posts = JSON.parse(localStorage.getItem(POSTS_KEY) || '[]');
   cfg   = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}');
   document.getElementById('redirBox').textContent = location.origin + location.pathname;
-  render(); // show local cache immediately
-  if (!cfg.sheetId && !cfg.binId) { openSettings(); return; }
-  loadPostsFromBin(); // sync from JSONBin on every open
+  render();
+  if (!cfg.sheetId) { openSettings(); return; }
+  loadPostsFromDashTab();
 });
 
 // ═══════════════════════════════════════════
@@ -622,30 +611,13 @@ async function ensureAuth() {
 // SETTINGS
 // ═══════════════════════════════════════════
 function openSettings() {
-  document.getElementById('s-binid').value = cfg.binId   || '';
-  document.getElementById('s-binkey').value= cfg.binKey  || '';
-  document.getElementById('s-id').value    = cfg.sheetId  || '';
-  document.getElementById('s-tab').value   = cfg.tabName  || '';
-  document.getElementById('s-key').value   = cfg.apiKey   || '';
-  document.getElementById('s-cid').value   = cfg.clientId || '';
+  document.getElementById('s-id').value  = cfg.sheetId  || '';
+  document.getElementById('s-tab').value = cfg.tabName  || '';
+  document.getElementById('s-key').value = cfg.apiKey   || '';
+  document.getElementById('s-cid').value = cfg.clientId || '';
   document.getElementById('redirBox').textContent = location.origin + location.pathname;
-  document.getElementById('testBinRes').textContent = '';
-  document.getElementById('testRes').textContent    = '';
+  document.getElementById('testRes').textContent  = '';
   document.getElementById('settingsBg').classList.add('open');
-}
-
-async function testBin() {
-  const binId  = document.getElementById('s-binid').value.trim();
-  const binKey = document.getElementById('s-binkey').value.trim();
-  const el     = document.getElementById('testBinRes');
-  if (!binId || !binKey) { el.textContent = '❌ Bin ID and Master Key required'; return; }
-  el.textContent = '🔄 Testing…';
-  try {
-    const res  = await fetch(`${JSONBIN_BASE}/${binId}/latest`, { headers: { 'X-Master-Key': binKey } });
-    const data = await res.json();
-    if (data.message && !data.record) { el.textContent = '❌ ' + data.message; return; }
-    el.textContent = '✅ JSONBin connected!';
-  } catch(e) { el.textContent = '❌ Network error'; }
 }
 
 async function testConn() {
@@ -661,14 +633,14 @@ async function testConn() {
     const data   = await res.json();
     if (data.error) { el.textContent = '❌ ' + data.error.message; return; }
     const rows = data.values || [];
-    el.textContent = rows[0] ? `✅ Sheet connected! Found: "${rows[0][2] || rows[0][1] || 'data'}"` : '✅ Sheet connected';
+    el.textContent = rows[0]
+      ? `✅ Connected! Found: "${rows[0][2] || rows[0][1] || 'data'}"`
+      : '✅ Sheet connected (no data in range yet)';
   } catch(e) { el.textContent = '❌ Network error'; }
 }
 
 function saveSettings() {
   cfg = {
-    binId:    document.getElementById('s-binid').value.trim(),
-    binKey:   document.getElementById('s-binkey').value.trim(),
     sheetId:  document.getElementById('s-id').value.trim(),
     tabName:  document.getElementById('s-tab').value.trim() || 'Sheet1',
     apiKey:   document.getElementById('s-key').value.trim(),
@@ -677,7 +649,7 @@ function saveSettings() {
   localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
   closeSheet('settingsBg');
   toast('Settings saved ✅');
-  if (cfg.binId && cfg.binKey) loadPostsFromBin();
+  loadPostsFromDashTab();
 }
 
 // ═══════════════════════════════════════════
@@ -706,43 +678,73 @@ function showCopyModal(text) {
 // HELPERS
 // ═══════════════════════════════════════════
 // ═══════════════════════════════════════════
-// JSONBIN — CROSS-DEVICE SYNC
-// Stores all posts in a JSONBin bin as a JSON array
-// Same bin read/written from any device
+// CROSS-DEVICE SYNC — "Dashboard" tab in Google Sheet
+// Columns: A=id B=srNo C=rowNo D=date E=song F=url G=caption H=overlay I=time
+// This tab is read/written by the dashboard only — not your main Post links tab
 // ═══════════════════════════════════════════
 async function savePosts() {
-  localStorage.setItem(POSTS_KEY, JSON.stringify(posts)); // local cache
-  if (cfg.binId && cfg.binKey) await savePostsToBin();
+  localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
+  if (cfg.sheetId) await savePostsToDashTab();
 }
 
-async function savePostsToBin() {
+async function savePostsToDashTab() {
+  if (!await ensureAuth()) return;
   setSP('🔄 Saving…');
+  const tab    = DASH_TAB;
+  const sid    = cfg.sheetId;
+  const header = [['id','srNo','rowNo','date','song','url','caption','overlay','time']];
+  const rows   = posts.map(p => [
+    p.id, p.srNo||'', p.rowNo||'', p.date||'',
+    p.song||'', p.url||'', p.caption||'', p.overlay||'', p.time||''
+  ]);
   try {
-    const res = await fetch(`${JSONBIN_BASE}/${cfg.binId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': cfg.binKey,
-        'X-Bin-Versioning': 'false'   // always overwrite, no version history
-      },
-      body: JSON.stringify({ posts })
-    });
-    const data = await res.json();
-    if (data.message && !data.record) { setSP('❌ Save failed'); toast('JSONBin: ' + data.message); return; }
+    // 1. Clear existing data
+    await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(tab+'!A:I')}:clear`,
+      { method:'POST', headers:{ 'Authorization':'Bearer '+oauthTok, 'Content-Type':'application/json' } }
+    );
+    // 2. Write fresh data
+    const res = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(tab+'!A1')}?valueInputOption=RAW`,
+      {
+        method: 'PUT',
+        headers: { 'Authorization':'Bearer '+oauthTok, 'Content-Type':'application/json' },
+        body: JSON.stringify({ values: [...header, ...rows] })
+      }
+    );
+    const d = await res.json();
+    if (d.error) { setSP('❌ Save failed'); toast('Dashboard tab: ' + d.error.message); return; }
     setSP('✅ Synced'); setTimeout(() => setSP(''), 2500);
-  } catch(e) { setSP('❌ Save failed'); toast('Network error — check connection'); }
+  } catch(e) { setSP('❌ Save failed'); toast('Network error'); }
 }
 
-async function loadPostsFromBin() {
-  if (!cfg.binId || !cfg.binKey) return;
+async function loadPostsFromDashTab() {
+  if (!cfg.sheetId || !cfg.apiKey) return;
   setSP('🔄 Loading…');
+  const range  = encodeURIComponent(`${DASH_TAB}!A2:I2000`);
+  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${cfg.sheetId}/values/${range}?key=${cfg.apiKey}`;
   try {
-    const res  = await fetch(`${JSONBIN_BASE}/${cfg.binId}/latest`, {
-      headers: { 'X-Master-Key': cfg.binKey }
-    });
+    const res  = await fetch(apiUrl);
     const data = await res.json();
-    if (!data.record) { setSP(''); return; }
-    posts = data.record.posts || [];
+    if (data.error) {
+      // Tab doesn't exist yet or empty — that's fine, start fresh
+      setSP(''); return;
+    }
+    const rows = data.values || [];
+    if (!rows.length) { setSP(''); return; }
+    posts = rows
+      .map(r => ({
+        id:      r[0] || 'p_' + Math.random().toString(36).slice(2),
+        srNo:    r[1] || '',
+        rowNo:   r[2] || '',
+        date:    r[3] || '',
+        song:    r[4] || '',
+        url:     r[5] || '',
+        caption: r[6] || '',
+        overlay: r[7] || '',
+        time:    r[8] || '',
+      }))
+      .filter(p => p.song);
     localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
     render();
     setSP('✅ Loaded'); setTimeout(() => setSP(''), 2000);
