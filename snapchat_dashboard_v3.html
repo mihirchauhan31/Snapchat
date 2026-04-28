@@ -48,6 +48,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .lbl { font-size: 11px; font-weight: 500; color: var(--muted); letter-spacing: 0.07em; text-transform: uppercase; min-width: 72px; padding-top: 2px; flex-shrink: 0; }
 .snap-url-text { font-size: 13px; color: var(--primary); text-decoration: none; word-break: break-all; }
 .snap-url-text:hover { text-decoration: underline; }
+.dropbox-link { font-size: 13px; color: #0061fe; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+.dropbox-link:hover { text-decoration: underline; }
 .no-url { font-size: 13px; color: #bbb; font-style: italic; }
 
 /* caption + overlay copy block */
@@ -199,7 +201,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <div class="sheet">
     <div class="handle"></div>
     <div class="sheet-title" id="mainSheetTitle">New Post</div>
-    <div class="sheet-sub">Sheet gets: Sr.No, Date, Song, URL &nbsp;·&nbsp; Local only: Caption, Overlay, Time</div>
+    <div class="sheet-sub">Sheet gets: Sr.No, Date, Song, URL &nbsp;·&nbsp; Local only: Dropbox, Caption, Overlay, Time</div>
 
     <div class="sdiv">Synced to Google Sheet <span class="chip green">↑ Sheet</span></div>
 
@@ -218,6 +220,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
     <div class="f"><label>Snapchat URL <span style="font-size:10px;font-weight:400;color:#aaa;">(if already available)</span></label><input type="url" id="f-url" placeholder="https://snapchat.com/t/..."></div>
 
     <div class="sdiv">Dashboard only — not saved to sheet <span class="chip yellow">Local</span></div>
+    <div class="f"><label>Dropbox Link <span style="font-size:10px;font-weight:400;color:#aaa;">shows as clickable link on card</span></label><input type="url" id="f-dropbox" placeholder="https://www.dropbox.com/..."></div>
     <div class="f"><label>Caption <span style="font-size:10px;font-weight:400;color:#aaa;">tap card to copy</span></label><textarea id="f-caption" placeholder="Caption with emoji 😊❤️🎵…"></textarea></div>
     <div class="f"><label>Text Overlay <span style="font-size:10px;font-weight:400;color:#aaa;">optional · tap card to copy</span></label><input type="text" id="f-overlay" placeholder="Leave blank if none"></div>
     <div class="f">
@@ -353,7 +356,7 @@ function renderCards() {
 }
 
 function cardHTML(p) {
-  const { id, srNo, rowNo, date, song, url, caption, overlay, time } = p;
+  const { id, srNo, rowNo, date, song, url, caption, overlay, time, dropbox } = p;
   const { day, mon } = parseDate(date);
   const capJS  = escJS(caption || '');
   const ovrJS  = escJS(overlay || '');
@@ -372,6 +375,10 @@ function cardHTML(p) {
           ${url ? `<a class="snap-url-text" href="${esc(url)}" target="_blank">${esc(url)}</a>`
                 : `<span class="no-url">Not added yet</span>`}
         </div>
+        ${dropbox ? `<div class="row">
+          <span class="lbl">Dropbox</span>
+          <a class="dropbox-link" href="${esc(dropbox)}" target="_blank">📦 Dropbox Link</a>
+        </div>` : ''}
         ${caption ? `<div class="row">
           <span class="lbl">Caption</span>
           <div class="copy-block">
@@ -443,6 +450,7 @@ function openAddSheet() {
   document.getElementById('f-date').value   = '';
   document.getElementById('f-song').value   = '';
   document.getElementById('f-url').value    = '';
+  document.getElementById('f-dropbox').value = '';
   document.getElementById('f-caption').value= '';
   document.getElementById('f-overlay').value= '';
   document.getElementById('f-time-sel').value= '';
@@ -459,6 +467,7 @@ function openEditSheet(id) {
   document.getElementById('f-date').value    = toInputDate(p.date);
   document.getElementById('f-song').value    = p.song    || '';
   document.getElementById('f-url').value     = p.url     || '';
+  document.getElementById('f-dropbox').value  = p.dropbox || '';
   document.getElementById('f-caption').value = p.caption || '';
   document.getElementById('f-overlay').value = p.overlay || '';
   document.getElementById('f-time-sel').value = p.time || '';
@@ -471,6 +480,7 @@ async function savePost() {
   const dateRaw = document.getElementById('f-date').value;
   const song    = document.getElementById('f-song').value.trim();
   const url     = document.getElementById('f-url').value.trim();
+  const dropbox = document.getElementById('f-dropbox').value.trim();
   const caption = document.getElementById('f-caption').value.trim();
   const overlay = document.getElementById('f-overlay').value.trim();
   const time    = document.getElementById('f-time-sel').value || '';
@@ -484,11 +494,11 @@ async function savePost() {
 
   if (editId) {
     const p = posts.find(x => x.id === editId);
-    if (p) Object.assign(p, { srNo, rowNo, date: dateForSheet, song, url, caption, overlay, time });
+    if (p) Object.assign(p, { srNo, rowNo, date: dateForSheet, song, url, dropbox, caption, overlay, time });
     if (cfg.sheetId && rowNo) await writeRowToSheet(parseInt(rowNo), srNo, dateForSheet, song, url);
   } else {
     const id = 'p_' + Date.now();
-    posts.push({ id, srNo, rowNo, date: dateForSheet, song, url, caption, overlay, time });
+    posts.push({ id, srNo, rowNo, date: dateForSheet, song, url, dropbox, caption, overlay, time });
     if (cfg.sheetId && rowNo) await writeRowToSheet(parseInt(rowNo), srNo, dateForSheet, song, url);
   }
 
@@ -692,15 +702,15 @@ async function savePostsToDashTab() {
   setSP('🔄 Saving…');
   const tab    = DASH_TAB;
   const sid    = cfg.sheetId;
-  const header = [['id','srNo','rowNo','date','song','url','caption','overlay','time']];
+  const header = [['id','srNo','rowNo','date','song','url','caption','overlay','time','dropbox']];
   const rows   = posts.map(p => [
     p.id, p.srNo||'', p.rowNo||'', p.date||'',
-    p.song||'', p.url||'', p.caption||'', p.overlay||'', p.time||''
+    p.song||'', p.url||'', p.caption||'', p.overlay||'', p.time||'', p.dropbox||''
   ]);
   try {
     // 1. Clear existing data
     await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(tab+'!A:I')}:clear`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${sid}/values/${encodeURIComponent(tab+'!A:J')}:clear`,
       { method:'POST', headers:{ 'Authorization':'Bearer '+oauthTok, 'Content-Type':'application/json' } }
     );
     // 2. Write fresh data
@@ -725,7 +735,7 @@ async function loadPostsFromDashTab() {
   }
   setSP('🔄 Refreshing…');
   // Add timestamp to bust any browser cache
-  const range  = encodeURIComponent(`${DASH_TAB}!A2:I2000`);
+  const range  = encodeURIComponent(`${DASH_TAB}!A2:J2000`);
   const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${cfg.sheetId}/values/${range}?key=${cfg.apiKey}&_=${Date.now()}`;
   try {
     const res  = await fetch(apiUrl, { cache: 'no-store' });
@@ -754,6 +764,7 @@ async function loadPostsFromDashTab() {
         caption: r[6] || '',
         overlay: r[7] || '',
         time:    r[8] || '',
+        dropbox: r[9] || '',
       }))
       .filter(p => p.song);
     localStorage.setItem(POSTS_KEY, JSON.stringify(posts));
