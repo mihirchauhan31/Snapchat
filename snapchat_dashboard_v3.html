@@ -494,8 +494,16 @@ async function savePost() {
 
   if (editId) {
     const p = posts.find(x => x.id === editId);
-    if (p) Object.assign(p, { srNo, rowNo, date: dateForSheet, song, url, dropbox, caption, overlay, time });
-    if (cfg.sheetId && rowNo) await writeRowToSheet(parseInt(rowNo), srNo, dateForSheet, song, url);
+    if (p) {
+      const oldRowNo = parseInt(p.rowNo);
+      const newRowNo = parseInt(rowNo);
+      // If row number changed, clear the old row in the sheet first
+      if (cfg.sheetId && oldRowNo && oldRowNo !== newRowNo) {
+        await clearSheetRow(oldRowNo);
+      }
+      Object.assign(p, { srNo, rowNo, date: dateForSheet, song, url, dropbox, caption, overlay, time });
+      if (cfg.sheetId && rowNo) await writeRowToSheet(newRowNo, srNo, dateForSheet, song, url);
+    }
   } else {
     const id = 'p_' + Date.now();
     posts.push({ id, srNo, rowNo, date: dateForSheet, song, url, dropbox, caption, overlay, time });
@@ -587,6 +595,20 @@ async function writeUrlToSheet(rowNo, url) {
     if (d.error) { setSP('❌ Sync failed'); toast('Sheet: ' + d.error.message); return false; }
     setSP('✅ Synced'); setTimeout(() => setSP(''), 3000); return true;
   } catch(e) { setSP('❌ Sync failed'); toast('Network error'); return false; }
+}
+
+// Clears A-D of a specific row (used when row number changes on edit)
+async function clearSheetRow(rowNo) {
+  if (!await ensureAuth()) return;
+  const tab    = cfg.tabName || 'Sheet1';
+  const range  = encodeURIComponent(`${tab}!A${rowNo}:D${rowNo}`);
+  const apiUrl = `https://sheets.googleapis.com/v4/spreadsheets/${cfg.sheetId}/values/${range}:clear`;
+  try {
+    await fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + oauthTok, 'Content-Type': 'application/json' }
+    });
+  } catch(e) { /* silently fail — not critical */ }
 }
 
 // ═══════════════════════════════════════════
